@@ -1,50 +1,25 @@
 import { Injectable } from '@nestjs/common';
-import {
-  CreateUserData,
-  UpdateUserData,
-  User,
-} from './interfaces/user.interface';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { UserSchema } from './schemas/user.schema';
+import { IUser } from './interfaces/user.interface';
 
 @Injectable()
 export class UserService {
-  private readonly users: User[] = [];
-  private idCounter = 1;
+  constructor(
+    @InjectRepository(UserSchema)
+    private usersRepository: Repository<IUser>,
+  ) {}
 
-  create(createUserData: CreateUserData) {
-    const user: User = {
-      id: this.idCounter++,
-      ...createUserData,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-    this.users.push(user);
-    return user;
+  findAll(): Promise<IUser[]> {
+    return this.usersRepository.find();
   }
 
-  findAll() {
-    return this.users;
+  findOne(id: string): Promise<IUser | null> {
+    return this.usersRepository.findOneBy({ id });
   }
 
-  findByIds(ids: number[]) {
-    return `This action returns #${ids.length} users`;
-  }
-
-  findAllByRole(role: string) {
-    return `This action returns a #${role} user`;
-  }
-  findAllByEmail(email: string) {
-    return `This action returns a #${email} user`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
-  }
-
-  update(id: number, changes: UpdateUserData) {
-    return `This action updates a #${id} user`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: string): Promise<void> {
+    await this.usersRepository.delete(id);
   }
 }
