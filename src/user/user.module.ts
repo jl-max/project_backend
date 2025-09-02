@@ -2,10 +2,12 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserService } from './user.service';
 import { UserController } from './user.controller';
-import { UserSchema } from './schemas/user.schema';
-import { RoleSchema } from './schemas/role.schema';
-import { CredentialSchema } from './schemas/credential.schema';
-import { PermissionSchema } from './schemas/permission.schema';
+import { UserSchema } from './entities/user.entity';
+import { RoleSchema } from './entities/role.entity';
+import { CredentialSchema } from './entities/credential.entity';
+import { PermissionSchema } from './entities/permission.entity';
+import { QueryRunnerFactory } from 'src/common/factories/query-runner.factory';
+import { UserSubscriber } from './user.subscriber';
 
 @Module({
   imports: [
@@ -17,7 +19,14 @@ import { PermissionSchema } from './schemas/permission.schema';
     ]),
   ],
   controllers: [UserController],
-  providers: [UserService],
+  providers: [
+    UserService,
+    UserSubscriber,
+    {
+      provide: 'IQueryRunnerFactory',
+      useClass: QueryRunnerFactory,
+    },
+  ],
   exports: [UserService],
 })
 export class UserModule {}
