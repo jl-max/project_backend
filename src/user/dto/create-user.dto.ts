@@ -1,6 +1,18 @@
-import { IsDate, IsEmail, IsNotEmpty, MinLength } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
+import {
+  IsBoolean,
+  IsDate,
+  IsEmail,
+  IsNotEmpty,
+  IsOptional,
+  ValidateNested,
+} from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import { CreateUserData } from '../interfaces/user.interface';
+
+class RoleDto {
+  id: number;
+}
 
 export class CreateUserDto implements CreateUserData {
   @IsEmail()
@@ -13,27 +25,30 @@ export class CreateUserDto implements CreateUserData {
   @ApiProperty({
     example: 'Jane Doe',
   })
-  name: string;
+  fullName: string;
 
   @IsNotEmpty()
-  @MinLength(6)
-  @ApiProperty({
-    example: 'password',
-  })
   password: string;
 
-  @IsNotEmpty()
-  @ApiProperty({
-    example: 'user',
-    enum: ['admin', 'user', 'guest'],
-  })
-  role: string;
-
-  @IsDate()
   @ApiProperty()
+  @IsBoolean()
+  isActive: boolean;
+
+  @ApiProperty()
+  @IsDate()
+  @Type(() => Date)
   createdAt: Date;
 
-  @IsDate()
   @ApiProperty()
+  @IsDate()
+  @Type(() => Date)
   updatedAt: Date;
+
+  @ApiPropertyOptional({ example: 'admin' })
+  @IsOptional()
+  createdBy?: string;
+
+  @ValidateNested({ each: true })
+  @Type(() => RoleDto)
+  roles: RoleDto[];
 }

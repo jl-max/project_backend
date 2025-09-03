@@ -68,13 +68,13 @@ describe('UserService', () => {
     });
   });
 
-  describe('findOne', () => {
+  describe('findOneById', () => {
     it('should return a user when a valid id is provided', async () => {
       const userId = '123';
       const mockUser: IUser = { id: userId, fullName: 'John Doe' } as any;
       jest.spyOn(repo, 'findOneBy').mockResolvedValue(mockUser);
 
-      const result = await service.findOne(userId);
+      const result = await service.findOneById(userId);
       expect(repo.findOneBy).toHaveBeenCalledWith({ id: userId });
       expect(result).toEqual(mockUser);
     });
@@ -83,7 +83,7 @@ describe('UserService', () => {
       const userId = 'non-existent-id';
       jest.spyOn(repo, 'findOneBy').mockResolvedValue(null);
 
-      const result = await service.findOne(userId);
+      const result = await service.findOneById(userId);
       expect(repo.findOneBy).toHaveBeenCalledWith({ id: userId });
       expect(result).toBeNull();
     });

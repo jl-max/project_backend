@@ -6,25 +6,31 @@ import {
   Patch,
   Param,
   Delete,
-  Query,
   ParseArrayPipe,
   ValidationPipe,
   UsePipes,
+  UseGuards,
 } from '@nestjs/common';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { Role } from '../auth/decorators/roles.decorator';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { QueryUserDto } from './dto/query-user.dto';
-import { ApiBody, ApiExtraModels } from '@nestjs/swagger';
+import { ApiBody } from '@nestjs/swagger';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  // 这个接口既需要登录，又要求用户必须是 Admin 角色
   @Post()
+  @Roles(Role.Admin)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @UsePipes(new ValidationPipe({ transform: true }))
-  create(@Body() createUserDto: CreateUserDto) {
-    this.userService.create(createUserDto);
+  async create(@Body() createUserDto: CreateUserDto) {
+    await this.userService.create(createUserDto);
   }
 
   @Post('bulk')
@@ -55,27 +61,25 @@ export class UserController {
     return 'This action adds new users';
   }
 
-  @ApiExtraModels(QueryUserDto)
+  // 这个接口需要登录，但对角色没有要求
+  @UseGuards(JwtAuthGuard)
   @Get()
-  findAll(@Query() query: QueryUserDto) {
-    if (query.ids) return this.userService.findByIds(query.ids);
-    if (query.role) return this.userService.findAllByRole(query.role);
-    if (query.email) return this.userService.findAllByEmail(query.email);
+  findAll() {
     return this.userService.findAll();
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.userService.findOne(+id);
+    return this.userService.findOneById(id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
+    return this.userService.update(id, updateUserDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.userService.remove(+id);
+    return this.userService.remove(id);
   }
 }

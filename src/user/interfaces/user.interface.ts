@@ -11,6 +11,10 @@ export interface IUser extends IBaseAudit {
   roles: IRole[];
 }
 
-export type CreateUserData = Omit<IUser, 'id'>;
+export type CreateUserData = Omit<IUser, 'id' | 'credential' | 'roles'> & {
+  password: string;
+};
 
 export type UpdateUserData = Partial<Omit<IUser, 'id'>>;
+
+export type SafeUser = Omit<IUser, 'credential'>;
