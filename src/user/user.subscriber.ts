@@ -4,11 +4,17 @@ import {
   EventSubscriber,
   InsertEvent,
 } from 'typeorm';
+import { Inject, type LoggerService } from '@nestjs/common';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { IUser } from './interfaces/user.interface';
 
 @EventSubscriber()
 export class UserSubscriber implements EntitySubscriberInterface<IUser> {
-  constructor(dataSource: DataSource) {
+  constructor(
+    @Inject(WINSTON_MODULE_NEST_PROVIDER)
+    private readonly logger: LoggerService,
+    dataSource: DataSource,
+  ) {
     dataSource.subscribers.push(this);
   }
 
@@ -17,6 +23,6 @@ export class UserSubscriber implements EntitySubscriberInterface<IUser> {
   }
 
   beforeInsert(event: InsertEvent<IUser>) {
-    console.log(`BEFORE USER INSERTED: `, event.entity);
+    this.logger.log(`BEFORE USER INSERTED: `, event.entity);
   }
 }

@@ -24,16 +24,17 @@ import { ApiBody } from '@nestjs/swagger';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  // 这个接口既需要登录，又要求用户必须是 Admin 角色
   @Post()
   @Roles(Role.Admin)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @UsePipes(new ValidationPipe({ transform: true }))
   async create(@Body() createUserDto: CreateUserDto) {
-    await this.userService.create(createUserDto);
+    return await this.userService.create(createUserDto);
   }
 
   @Post('bulk')
+  @Roles(Role.Admin)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @ApiBody({
     type: [CreateUserDto],
     examples: {
@@ -61,24 +62,34 @@ export class UserController {
     return 'This action adds new users';
   }
 
-  // 这个接口需要登录，但对角色没有要求
-  @UseGuards(JwtAuthGuard)
   @Get()
+  @UseGuards(JwtAuthGuard)
   findAll() {
     return this.userService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  @UseGuards(JwtAuthGuard)
+  findOneById(@Param('id') id: string) {
     return this.userService.findOneById(id);
   }
 
+  @Get(':email')
+  @UseGuards(JwtAuthGuard)
+  findOneByEmail(@Param('email') email: string) {
+    return this.userService.findOneByEmail(email);
+  }
+
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(id, updateUserDto);
+  @Roles(Role.Admin)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  updateById(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    // return this.userService.updateById(id, updateUserDto);
   }
 
   @Delete(':id')
+  @Roles(Role.Admin)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   remove(@Param('id') id: string) {
     return this.userService.remove(id);
   }

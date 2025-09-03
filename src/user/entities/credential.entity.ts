@@ -5,13 +5,14 @@ export const CredentialSchema = new EntitySchema<ICredential>({
   name: 'Credential',
   tableName: 'credentials',
   columns: {
-    id: {
-      type: 'int',
-      primary: true,
-      generated: true,
-    },
+    id: { type: 'int', primary: true, generated: true },
     passwordHash: { type: String },
-    salt: { type: String },
+    createdAt: { type: 'timestamp', createDate: true },
+    updatedAt: { type: 'timestamp', updateDate: true },
+    deletedAt: { type: 'timestamp', updateDate: true },
+    createdBy: { type: String, nullable: true },
+    updatedBy: { type: String, nullable: true },
+    version: { type: String, nullable: true },
   },
   relations: {
     user: {
