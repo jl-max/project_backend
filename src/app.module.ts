@@ -26,7 +26,7 @@ import { AuthModule } from './auth/auth.module';
         username: config.get('DB_USERNAME'),
         password: config.get('DB_PASSWORD'),
         database: config.get('DB_NAME'),
-        entities: [__dirname + '/**/*.entity{.ts,.js}'],
+        entities: [__dirname + '/**/*.schema{.ts,.js}'],
         migrations: [__dirname + '/migrations/**/*{.ts,.js}'],
         subscribers: [__dirname + '/**/*.subscriber{.ts,.js}'],
         synchronize: config.get('DB_SYNC'),

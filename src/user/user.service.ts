@@ -11,7 +11,7 @@ import { IUser, SafeUser } from './interfaces/user.interface';
 import { IRole } from './interfaces/role.interface';
 import { ICredential } from './interfaces/credential.interface';
 import type { IQueryRunnerFactory } from 'src/common/interfaces/query-runner.interface';
-import { UserSchema } from './entities/user.entity';
+import { UserSchema } from './schemas/user.schema';
 import { CreateUserDto } from './dto/create-user.dto';
 
 @Injectable()

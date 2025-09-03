@@ -4,5 +4,4 @@ export interface IBaseAudit {
   deletedAt?: Date | null;
   createdBy?: string;
   updatedBy?: string;
-  version?: number;
 }

@@ -1,5 +1,6 @@
 import { EntitySchema } from 'typeorm';
 import { IUser } from '../interfaces/user.interface';
+import { BaseColumnSchemaPart } from 'src/common/base-column.schema';
 
 export const UserSchema = new EntitySchema<IUser>({
   name: 'User',
@@ -9,12 +10,7 @@ export const UserSchema = new EntitySchema<IUser>({
     email: { type: String, unique: true },
     fullName: { type: String },
     isActive: { type: Boolean, default: true },
-    createdAt: { type: 'timestamp', createDate: true },
-    updatedAt: { type: 'timestamp', updateDate: true },
-    deletedAt: { type: 'timestamp', updateDate: true },
-    createdBy: { type: String, nullable: true },
-    updatedBy: { type: String, nullable: true },
-    version: { type: String, nullable: true },
+    ...BaseColumnSchemaPart,
   },
   relations: {
     credential: {

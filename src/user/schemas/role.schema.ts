@@ -1,5 +1,6 @@
 import { EntitySchema } from 'typeorm';
 import { IRole } from '../interfaces/role.interface';
+import { BaseColumnSchemaPart } from 'src/common/base-column.schema';
 
 export const RoleSchema = new EntitySchema<IRole>({
   name: 'Role',
@@ -7,12 +8,7 @@ export const RoleSchema = new EntitySchema<IRole>({
   columns: {
     id: { type: 'int', primary: true, generated: true },
     name: { type: String, unique: true },
-    createdAt: { type: 'timestamp', createDate: true },
-    updatedAt: { type: 'timestamp', updateDate: true },
-    deletedAt: { type: 'timestamp', updateDate: true },
-    createdBy: { type: String, nullable: true },
-    updatedBy: { type: String, nullable: true },
-    version: { type: String, nullable: true },
+    ...BaseColumnSchemaPart,
   },
   relations: {
     users: {

@@ -8,7 +8,7 @@ import { createMock } from '@golevelup/ts-jest';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 
 import { UserService } from './user.service';
-import { UserSchema } from './entities/user.entity';
+import { UserSchema } from './schemas/user.schema';
 import { IUser, SafeUser } from './interfaces/user.interface';
 import { ICredential } from './interfaces/credential.interface';
 import { IRole } from './interfaces/role.interface';
