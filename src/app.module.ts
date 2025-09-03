@@ -15,7 +15,7 @@ import { AuthModule } from './auth/auth.module';
     AuthModule,
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: ['.env'],
+      envFilePath: ['.env.development'],
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
@@ -25,10 +25,12 @@ import { AuthModule } from './auth/auth.module';
         port: +config.get('DB_PORT'),
         username: config.get('DB_USERNAME'),
         password: config.get('DB_PASSWORD'),
-        database: config.get('DB_DATABASE'),
+        database: config.get('DB_NAME'),
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
+        migrations: [__dirname + '/migrations/**/*{.ts,.js}'],
         subscribers: [__dirname + '/**/*.subscriber{.ts,.js}'],
-        synchronize: config.get('DB_SYNC') === 'true',
+        synchronize: config.get('DB_SYNC'),
+        migrationsTableName: 'migrations',
       }),
       inject: [ConfigService],
     }),
