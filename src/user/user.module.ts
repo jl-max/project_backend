@@ -18,6 +18,7 @@ TypeOrmModule.forRootAsync({
   useFactory: () => ({
     type: 'mysql',
     entities: [UserSchema, RoleSchema, CredentialSchema, PermissionSchema],
+    subscribers: [UserSubscriber],
     synchronize: true,
   }),
 });

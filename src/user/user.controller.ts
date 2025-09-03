@@ -18,13 +18,14 @@ import { Role } from '../auth/decorators/roles.decorator';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { ApiBody } from '@nestjs/swagger';
+import { ApiBody, ApiSecurity } from '@nestjs/swagger';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
+  @ApiSecurity('jwt')
   @Roles(Role.Admin)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @UsePipes(new ValidationPipe({ transform: true }))
@@ -33,6 +34,7 @@ export class UserController {
   }
 
   @Post('bulk')
+  @ApiSecurity('jwt')
   @Roles(Role.Admin)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @ApiBody({
@@ -63,24 +65,28 @@ export class UserController {
   }
 
   @Get()
+  @ApiSecurity('basic-auth')
   @UseGuards(JwtAuthGuard)
   findAll() {
     return this.userService.findAll();
   }
 
   @Get(':id')
+  @ApiSecurity('jwt')
   @UseGuards(JwtAuthGuard)
   findOneById(@Param('id') id: string) {
     return this.userService.findOneById(id);
   }
 
   @Get(':email')
+  @ApiSecurity('jwt')
   @UseGuards(JwtAuthGuard)
   findOneByEmail(@Param('email') email: string) {
     return this.userService.findOneByEmail(email);
   }
 
   @Patch(':id')
+  @ApiSecurity('jwt')
   @Roles(Role.Admin)
   @UseGuards(JwtAuthGuard, RolesGuard)
   updateById(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
@@ -88,6 +94,7 @@ export class UserController {
   }
 
   @Delete(':id')
+  @ApiSecurity('jwt')
   @Roles(Role.Admin)
   @UseGuards(JwtAuthGuard, RolesGuard)
   remove(@Param('id') id: string) {
