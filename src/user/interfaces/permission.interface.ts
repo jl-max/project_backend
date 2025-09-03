@@ -3,6 +3,6 @@ import { IRole } from './role.interface';
 
 export interface IPermission extends IBaseAudit {
   id: number;
-  code: string; // e.g. 'user:create'
+  action: string;
   roles?: IRole[];
 }

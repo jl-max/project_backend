@@ -1,13 +1,13 @@
 import { EntitySchema } from 'typeorm';
 import { IPermission } from '../interfaces/permission.interface';
-import { BaseColumnSchemaPart } from 'src/common/base-column.schema';
+import { BaseColumnSchemaPart } from '../../common/base-column.schema';
 
 export const PermissionSchema = new EntitySchema<IPermission>({
   name: 'Permission',
   tableName: 'permissions',
   columns: {
     id: { type: 'int', primary: true, generated: true },
-    code: { type: String, unique: true },
+    action: { type: String, unique: true },
     ...BaseColumnSchemaPart,
   },
   relations: {

@@ -1,6 +1,6 @@
 import { EntitySchema } from 'typeorm';
 import { IRole } from '../interfaces/role.interface';
-import { BaseColumnSchemaPart } from 'src/common/base-column.schema';
+import { BaseColumnSchemaPart } from '../../common/base-column.schema';
 
 export const RoleSchema = new EntitySchema<IRole>({
   name: 'Role',
@@ -19,9 +19,14 @@ export const RoleSchema = new EntitySchema<IRole>({
     permissions: {
       type: 'many-to-many',
       target: 'Permission',
-      inverseSide: 'roles',
-      joinTable: { name: 'role_permissions' },
-      cascade: true,
+      joinTable: {
+        name: 'role_permissions',
+        joinColumn: { name: 'role_id', referencedColumnName: 'id' },
+        inverseJoinColumn: {
+          name: 'permission_id',
+          referencedColumnName: 'id',
+        },
+      },
     },
   },
 });

@@ -1,6 +1,6 @@
 import { EntitySchema } from 'typeorm';
 import { ICredential } from '../interfaces/credential.interface';
-import { BaseColumnSchemaPart } from 'src/common/base-column.schema';
+import { BaseColumnSchemaPart } from '../../common/base-column.schema';
 
 export const CredentialSchema = new EntitySchema<ICredential>({
   name: 'Credential',
@@ -14,7 +14,7 @@ export const CredentialSchema = new EntitySchema<ICredential>({
     user: {
       type: 'one-to-one',
       target: 'User',
-      joinColumn: { name: 'user_id' },
+      joinColumn: { name: 'user_id', referencedColumnName: 'id' },
     },
   },
 });
