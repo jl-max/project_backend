@@ -59,12 +59,53 @@ describe('UserService', () => {
 
   describe('findAll', () => {
     it('should return all users', async () => {
-      const users: IUser[] = [{ id: '1', name: 'Alice' } as any];
+      const users: IUser[] = [{ id: '1', fullName: 'Alice Wang' } as any];
       jest.spyOn(repo, 'find').mockResolvedValue(users);
 
       const res = await service.findAll();
       expect(res).toEqual(users);
       expect(repo.find).toHaveBeenCalled();
+    });
+  });
+
+  describe('findOne', () => {
+    it('should return a user when a valid id is provided', async () => {
+      const userId = '123';
+      const mockUser: IUser = { id: userId, fullName: 'John Doe' } as any;
+      jest.spyOn(repo, 'findOneBy').mockResolvedValue(mockUser);
+
+      const result = await service.findOne(userId);
+      expect(repo.findOneBy).toHaveBeenCalledWith({ id: userId });
+      expect(result).toEqual(mockUser);
+    });
+
+    it('should return null when user is not found', async () => {
+      const userId = 'non-existent-id';
+      jest.spyOn(repo, 'findOneBy').mockResolvedValue(null);
+
+      const result = await service.findOne(userId);
+      expect(repo.findOneBy).toHaveBeenCalledWith({ id: userId });
+      expect(result).toBeNull();
+    });
+  });
+
+  describe('remove', () => {
+    it('should call the repository delete method with the correct id', async () => {
+      const userId = '456';
+      jest.spyOn(repo, 'delete').mockResolvedValue({ affected: 1 } as any);
+
+      await service.remove(userId);
+      expect(repo.delete).toHaveBeenCalledWith(userId);
+      expect(repo.delete).toHaveBeenCalledTimes(1);
+    });
+
+    it('should propagate errors if the repository delete method fails', async () => {
+      const userId = '789';
+      const dbError = new Error('Database connection lost');
+      jest.spyOn(repo, 'delete').mockRejectedValue(dbError);
+
+      await expect(service.remove(userId)).rejects.toThrow(dbError);
+      expect(repo.delete).toHaveBeenCalledWith(userId);
     });
   });
 
@@ -74,7 +115,7 @@ describe('UserService', () => {
     });
 
     it('should commit when all succeed', async () => {
-      const users: IUser[] = [{ name: 'A' }, { name: 'B' }] as any;
+      const users: IUser[] = [{ fullName: 'A' }, { fullName: 'B' }] as any;
       jest.spyOn(qr.manager, 'save').mockResolvedValue(users as any);
 
       const res = await service.createMany(users);
@@ -88,7 +129,7 @@ describe('UserService', () => {
     });
 
     it('should rollback on error', async () => {
-      const users: IUser[] = [{ name: 'A' }] as any;
+      const users: IUser[] = [{ fullName: 'A' }] as any;
       jest.spyOn(qr.manager, 'save').mockRejectedValue(new Error('DB Error'));
 
       await expect(service.createMany(users)).rejects.toThrow('DB Error');
