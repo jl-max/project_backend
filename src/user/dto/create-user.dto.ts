@@ -1,18 +1,6 @@
-import {
-  IsBoolean,
-  IsDate,
-  IsEmail,
-  IsNotEmpty,
-  IsOptional,
-  ValidateNested,
-} from 'class-validator';
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
+import { IsEmail, IsNotEmpty } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 import { CreateUserData } from '../interfaces/user.interface';
-
-class RoleDto {
-  id: number;
-}
 
 export class CreateUserDto implements CreateUserData {
   @IsEmail()
@@ -29,26 +17,4 @@ export class CreateUserDto implements CreateUserData {
 
   @IsNotEmpty()
   password: string;
-
-  @ApiProperty()
-  @IsBoolean()
-  isActive: boolean;
-
-  @ApiProperty()
-  @IsDate()
-  @Type(() => Date)
-  createdAt: Date;
-
-  @ApiProperty()
-  @IsDate()
-  @Type(() => Date)
-  updatedAt: Date;
-
-  @ApiPropertyOptional({ example: 'admin' })
-  @IsOptional()
-  createdBy?: string;
-
-  @ValidateNested({ each: true })
-  @Type(() => RoleDto)
-  roles: RoleDto[];
 }
