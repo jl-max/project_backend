@@ -65,7 +65,7 @@ export class UserController {
   }
 
   @Get()
-  @ApiSecurity('basic-auth')
+  @ApiSecurity('jwt')
   @UseGuards(JwtAuthGuard)
   findAll() {
     return this.userService.findAll();
