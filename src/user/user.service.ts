@@ -4,7 +4,7 @@ import {
   Injectable,
   type LoggerService,
 } from '@nestjs/common';
-import { Repository, In } from 'typeorm';
+import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { IUser, SafeUser } from './interfaces/user.interface';
@@ -52,16 +52,16 @@ export class UserService {
 
     // Retrieve the complete Role entity and then associate it
     const roles = await this.roleRepo.find({
-      where: { id: In(dto.roles.map((r) => r.id)) },
+      where: { id: 0 },
     });
 
     const user = this.usersRepo.create({
       email: dto.email,
       fullName: dto.fullName,
-      isActive: dto.isActive,
-      createdAt: dto.createdAt,
-      updatedAt: dto.updatedAt,
-      createdBy: dto.createdBy,
+      isActive: true,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      createdBy: undefined,
       credential: savedCred,
       roles,
     });

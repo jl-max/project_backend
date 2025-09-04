@@ -44,13 +44,13 @@ export class UserController {
         value: [
           {
             email: 'user1@example.com',
-            name: 'Jane',
+            fullName: 'Jane',
             password: 'password123',
             role: 'user',
           },
           {
             email: 'user2@example.com',
-            name: 'John',
+            fullName: 'John',
             password: 'password456',
             role: 'guest',
           },

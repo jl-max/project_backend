@@ -3,17 +3,18 @@ import {
   EventSubscriber,
   InsertEvent,
 } from 'typeorm';
-import { Inject, Injectable, type LoggerService } from '@nestjs/common';
+import { Inject, Injectable, Logger, type LoggerService } from '@nestjs/common';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { IUser } from './interfaces/user.interface';
 
 @EventSubscriber()
 @Injectable()
 export class UserSubscriber implements EntitySubscriberInterface<IUser> {
-  constructor(
-    @Inject(WINSTON_MODULE_NEST_PROVIDER)
-    private readonly logger: LoggerService,
-  ) {}
+  // constructor(
+  //   @Inject(WINSTON_MODULE_NEST_PROVIDER)
+  //   private readonly logger: LoggerService,
+  // ) {}
+  private readonly logger = new Logger(UserSubscriber.name);
 
   listenTo() {
     return 'User';

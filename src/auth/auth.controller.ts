@@ -1,10 +1,18 @@
-import { Controller, Request, Get, Post, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Request,
+  Get,
+  Post,
+  UseGuards,
+  Body,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { JwtPayload } from './strategies/jwt.strategy';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
-import { IUser } from 'src/user/interfaces/user.interface';
-import { ApiSecurity } from '@nestjs/swagger';
+import { IUser, SafeUser } from 'src/user/interfaces/user.interface';
+import { ApiBody, ApiSecurity } from '@nestjs/swagger';
+import { CreateUserDto } from 'src/user/dto/create-user.dto';
 
 type LocalAuthRequest = Request & { user: IUser };
 type AuthenticatedRequest = Request & { user: JwtPayload };
@@ -12,6 +20,23 @@ type AuthenticatedRequest = Request & { user: JwtPayload };
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
+
+  @Post('register')
+  @ApiBody({
+    type: [CreateUserDto],
+    examples: {
+      example1: {
+        value: {
+          email: 'jane@example.com',
+          fullName: 'Jane Doe',
+          password: '123456',
+        },
+      },
+    },
+  })
+  async register(@Body() dto: CreateUserDto): Promise<SafeUser> {
+    return this.authService.register(dto);
+  }
 
   @Post('login')
   @ApiSecurity('basic-auth')
