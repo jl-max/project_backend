@@ -1,4 +1,4 @@
-import { MigrationInterface, QueryRunner } from 'typeorm';
+import { type MigrationInterface, type QueryRunner } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 
 export class SeedAuthData1693712345678 implements MigrationInterface {
